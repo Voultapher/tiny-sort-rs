@@ -7,7 +7,7 @@ authors = ["Lukas Bergdoll <lukas.bergdoll@gmail.com>"]
 [dependencies]
 
 [dev-dependencies]
-sort_test_tools = { git = "https://github.com/Voultapher/sort-research-rs", rev = "ac65d17cdd1bfac2ea076fffa31f081d6d3452e2", default-features = false }
+sort_test_tools = { git = "https://github.com/Voultapher/sort-research-rs", rev = "5e07fb6ebb61920ff9f5e896badd88502fe40e35", default-features = false }
 
 [features]
 default = ["stable", "unstable", "large_test_sizes"]
