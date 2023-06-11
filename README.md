@@ -91,10 +91,12 @@ The baseline with the sort uncommented is: `292864 bytes`. The values below are 
 - rust_tinymergesort_stable    | 648 bytes
 - rust_std_stable              | 2928 bytes
 - cpp_std_gnu_stable           | 5528 bytes
+- cpp_std_libxx_stable         | 4368 bytes
 
 - rust_tinyheapsort_unstable   | 304 bytes
 - rust_std_unstable            | 3848 bytes
 - cpp_std_gnu_unstable         | 2128 bytes
+- cpp_std_libcxx_unstable      | 1272 bytes
 ```
 
 
