@@ -3,19 +3,28 @@ name = "tiny_sort"
 version = "0.1.0"
 edition = "2018"
 authors = ["Lukas Bergdoll <lukas.bergdoll@gmail.com>"]
+license = "Apache-2.0"
+
+description = "Binary-size optimized stable and unstable sorts"
+readme = "README.md"
+documentation = "https://docs.rs/tiny_sort"
+
+repository = "https://github.com/Voultapher/tiny-sort-rs"
+keywords = ["sort", "sorting", "binary", "size", "tiny"]
+categories = ["algorithms", "rust-patterns"]
+
+include = ["src/*.rs", "Cargo.toml", "README.md", "LICENSE"]
 
 [dependencies]
 
 [dev-dependencies]
-sort_test_tools = { git = "https://github.com/Voultapher/sort-research-rs", rev = "5e07fb6ebb61920ff9f5e896badd88502fe40e35", default-features = false }
+sort_test_tools = { git = "https://github.com/Voultapher/sort-research-rs", rev = "5e07fb6ebb61920ff9f5e896badd88502fe40e35" }
 
 [features]
-default = ["stable", "unstable", "large_test_sizes"]
+default = ["stable", "unstable"]
 
 # Enable the stable sort.
 stable = []
 
 # Enable the unstable sort.
 unstable = []
-
-large_test_sizes = ["sort_test_tools/large_test_sizes"]

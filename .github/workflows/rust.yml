@@ -23,7 +23,7 @@ jobs:
     - name: Check rustfmt
       run: cargo fmt --check
 
-  miri:
+  miri_stable:
     runs-on: ubuntu-latest
 
     timeout-minutes: 15
@@ -41,10 +41,34 @@ jobs:
         curl -LsSf https://get.nexte.st/latest/linux | tar zxf - -C ${CARGO_HOME:-~/.cargo}/bin
     - name: Run tests x86_64-unknown-linux-gnu (little-endian)
       run: |
-        cargo miri nextest run --verbose --target x86_64-unknown-linux-gnu -j4
+        cargo miri nextest run --verbose --target x86_64-unknown-linux-gnu -j4 --test stable
     - name: Run tests mips64-unknown-linux-gnuabi64 (big-endian)
       run: |
-        cargo miri test --verbose --target mips64-unknown-linux-gnuabi64 random_z1
+        cargo miri test --verbose --target mips64-unknown-linux-gnuabi64 --test stable random_z1
+
+  miri_unstable:
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 15
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install latest nightly
+      uses: actions-rs/toolchain@v1
+      with:
+          toolchain: nightly
+          override: true
+          components: miri, rust-src
+    - name: Install cargo-nextest
+      run: |
+        curl -LsSf https://get.nexte.st/latest/linux | tar zxf - -C ${CARGO_HOME:-~/.cargo}/bin
+    - name: Run tests x86_64-unknown-linux-gnu (little-endian)
+      run: |
+        cargo miri nextest run --verbose --target x86_64-unknown-linux-gnu -j4 --test unstable
+    - name: Run tests mips64-unknown-linux-gnuabi64 (big-endian)
+      run: |
+        cargo miri test --verbose --target mips64-unknown-linux-gnuabi64 --test unstable random_z1
+
   asan:
     runs-on: ubuntu-latest
     
@@ -55,10 +79,8 @@ jobs:
       with:
           toolchain: nightly
           override: true
-    - name: Run tests 
-      run: bash -c "for i in {0..100}; do RUSTFLAGS=-Zsanitizer=address cargo test --no-default-features --release --features='stable,unstable'; done"
-    - name: Run tests with large test sizes
-      run: bash -c "for i in {0..2}; do RUSTFLAGS=-Zsanitizer=address cargo test --release; done"
+    - name: Run tests
+      run: bash -c "for i in {0..10}; do RUSTFLAGS=-Zsanitizer=address cargo test --release; done"
 
   old_rust_rustc_1_51:
     runs-on: ubuntu-latest
