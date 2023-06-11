@@ -42,16 +42,19 @@ Contestants:
 - rust_tinymergesort_stable    | This crate' `stable::sort`
 - rust_std_stable              | `slice::sort` https://github.com/rust-lang/rust (1)
 - cpp_std_gnu_stable           | libstdc++ `std::sort_stable` (2)
+- cpp_std_libcxx_stable        | libc++ `std::sort_stable` (3)
 
 - rust_tinyheapsort_unstable   | This crate' `unstable::sort`
 - rust_std_unstable            | `slice::sort_unstable` https://github.com/rust-lang/rust (1)
 - cpp_std_gnu_unstable         | libstdc++ `std::sort` (2)
+- cpp_std_libcxx_unstable      | libc++ `std::sort` (3)
 ```
 
 Footnotes:
 
 1. Vendored ca. mid 2022.
 2. Built with gcc.
+3. Built with clang.
 
 ### Binary-size
 
@@ -91,7 +94,7 @@ The baseline with the sort uncommented is: `292864 bytes`. The values below are 
 ```
 
 
-### Runtime
+### Run-time
 
 A *rough* estimate what kind of performance you can get with these sort implementations. *If you care about performance use `slice::sort` and `slice::sort_unstable`.*
 
