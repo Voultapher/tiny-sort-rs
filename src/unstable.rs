@@ -22,7 +22,7 @@ pub fn sort<T: Ord>(v: &mut [T]) {
 /// Same behavior as [`sort`]
 #[inline(always)]
 pub fn sort_by<T, F: FnMut(&T, &T) -> Ordering>(v: &mut [T], mut compare: F) {
-    unstable_sort(v, |a, b| compare(a, b).is_lt());
+    unstable_sort(v, |a, b| compare(a, b) == Ordering::Less);
 }
 
 #[inline(always)]

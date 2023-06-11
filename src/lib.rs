@@ -11,6 +11,7 @@
 //! and run-time.
 
 #![no_std]
+#![allow(unused_unsafe)] // Each internal use of unsafe is documented.
 
 #[cfg(feature = "stable")]
 pub mod stable;

@@ -118,6 +118,12 @@ A *rough* estimate what kind of performance you can get with these sort implemen
 
 <img src="assets/cold-u64-scaling-random-unstable.png" width=810 />
 
+## Min required rustc version
+
+The minimum required rustc version is 1.51.
+
+The minimum versions are best-effort and may change with any new major release.
+
 ## Contributing
 
 Please respect the [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) when contributing.

@@ -28,7 +28,7 @@ pub fn sort<T: Ord>(v: &mut [T]) {
 /// Same behavior as [`sort`].
 #[inline(always)]
 pub fn sort_by<T, F: FnMut(&T, &T) -> Ordering>(v: &mut [T], mut compare: F) {
-    stable_sort(v, |a, b| compare(a, b).is_lt());
+    stable_sort(v, |a, b| compare(a, b) == Ordering::Less);
 }
 
 #[inline(always)]
@@ -185,9 +185,7 @@ struct BufGuard<T> {
 
 impl<T> BufGuard<T> {
     fn new(len: usize) -> Self {
-        // SAFETY: len comes from a slice so we know it has to be valid already and we checked that
-        // len >= 1.
-        let layout = unsafe { Layout::array::<T>(len).unwrap_unchecked() };
+        let layout = Layout::array::<T>(len).unwrap();
         // SAFETY: We checked that T is not a ZST.
         let buf_ptr = unsafe { alloc(layout) as *mut T };
 
@@ -204,7 +202,7 @@ impl<T> Drop for BufGuard<T> {
         unsafe {
             dealloc(
                 self.buf_ptr.as_ptr() as *mut u8,
-                Layout::array::<T>(self.capacity).unwrap_unchecked(),
+                Layout::array::<T>(self.capacity).unwrap(),
             );
         }
     }

@@ -57,3 +57,18 @@ jobs:
       run: bash -c "for i in {0..100}; do RUSTFLAGS=-Zsanitizer=address cargo test --no-default-features --release --features='stable,unstable'; done"
     - name: Run tests with large test sizes
       run: bash -c "for i in {0..2}; do RUSTFLAGS=-Zsanitizer=address cargo test --release; done"
+
+  old_rust_rustc_1_51:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: 1.51.0
+        profile: minimal
+        override: true
+    - name: Build debug
+      run: cargo build
+    - name: Build release
+      run: cargo build --release
