@@ -1,6 +1,6 @@
 [package]
 name = "tiny_sort"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2018"
 authors = ["Lukas Bergdoll <lukas.bergdoll@gmail.com>"]
 license = "Apache-2.0"
