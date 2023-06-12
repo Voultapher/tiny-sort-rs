@@ -45,14 +45,22 @@ fn stable_sort<T, F: FnMut(&T, &T) -> bool>(v: &mut [T], mut is_less: F) {
         return;
     }
 
-    mergesort_main(v, &mut is_less);
+    // SAFETY: We checked that len is > 0 and that T is not a ZST.
+    unsafe {
+        mergesort_main(v, &mut is_less);
+    }
 }
 
 /// The core logic should not be inlined.
+///
+/// SAFETY: The caller has to ensure that len is > 0 and that T is not a ZST.
 #[inline(never)]
-fn mergesort_main<T, F: FnMut(&T, &T) -> bool>(v: &mut [T], is_less: &mut F) {
-    // While it would be nice to have a merge implementation that only requires N / 2 auxiliary memory. Doing so would make the merge implementation significantly more complex and
-    let buf = BufGuard::new(v.len());
+unsafe fn mergesort_main<T, F: FnMut(&T, &T) -> bool>(v: &mut [T], is_less: &mut F) {
+    // While it would be nice to have a merge implementation that only requires N / 2 auxiliary
+    // memory. Doing so would make the merge implementation significantly more complex and
+
+    // SAFETY: See function safety description.
+    let buf = unsafe { BufGuard::new(v.len()) };
 
     // SAFETY: `scratch` has space for `v.len()` writes. And does not alias `v`.
     unsafe {
@@ -175,6 +183,19 @@ pub unsafe fn branchless_swap<T>(a_ptr: *mut T, b_ptr: *mut T, should_swap: bool
     ptr::copy_nonoverlapping(tmp.as_ptr(), b_ptr, 1);
 }
 
+// SAFETY: The caller has to ensure that Option is Some, UB otherwise.
+unsafe fn unwrap_unchecked<T>(opt_val: Option<T>) -> T {
+    match opt_val {
+        Some(val) => val,
+        None => {
+            // SAFETY: See function safety description.
+            unsafe {
+                core::hint::unreachable_unchecked();
+            }
+        }
+    }
+}
+
 // Extremely basic versions of Vec.
 // Their use is super limited and by having the code here, it allows reuse between the sort
 // implementations.
@@ -184,10 +205,19 @@ struct BufGuard<T> {
 }
 
 impl<T> BufGuard<T> {
-    fn new(len: usize) -> Self {
-        let layout = Layout::array::<T>(len).unwrap();
+    // SAFETY: The caller has to ensure that len is not 0 and that T is not a ZST.
+    unsafe fn new(len: usize) -> Self {
+        debug_assert!(len > 0 && mem::size_of::<T>() > 0);
+
+        // SAFETY: See function safety description.
+        let layout = unsafe { unwrap_unchecked(Layout::array::<T>(len).ok()) };
+
         // SAFETY: We checked that T is not a ZST.
         let buf_ptr = unsafe { alloc(layout) as *mut T };
+
+        if buf_ptr.is_null() {
+            panic!("allocation failure");
+        }
 
         Self {
             buf_ptr: ptr::NonNull::new(buf_ptr).unwrap(),

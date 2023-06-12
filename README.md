@@ -88,7 +88,7 @@ fn main() {
 The baseline with the sort uncommented is: `292864 bytes`. The values below are the stripped binary size subtracted from the baseline.
 
 ```text
-- rust_tinymergesort_stable    | 648 bytes
+- rust_tinymergesort_stable    | 632 bytes
 - rust_std_stable              | 2928 bytes
 - cpp_std_gnu_stable           | 5528 bytes
 - cpp_std_libxx_stable         | 4368 bytes
