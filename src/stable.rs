@@ -31,6 +31,18 @@ pub fn sort_by<T, F: FnMut(&T, &T) -> Ordering>(v: &mut [T], mut compare: F) {
     stable_sort(v, |a, b| compare(a, b) == Ordering::Less);
 }
 
+/// Sort `v` preserving initial order of equal elements by key extraction function `f`.
+///
+/// Same behavior as [`sort`]
+#[inline(always)]
+pub fn sort_by_key<T, K, F>(v: &mut [T], mut f: F)
+where
+    F: FnMut(&T) -> K,
+    K: Ord,
+{
+    stable_sort(v, |a, b| f(a).lt(&f(b)));
+}
+
 #[inline(always)]
 fn stable_sort<T, F: FnMut(&T, &T) -> bool>(v: &mut [T], mut is_less: F) {
     if mem::size_of::<T>() == 0 {

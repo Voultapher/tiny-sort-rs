@@ -23,3 +23,31 @@ impl Sort for SortImpl {
 }
 
 instantiate_sort_tests!(SortImpl);
+
+#[test]
+fn by_key() {
+    // Padding values to ensure that misusing val would give other comparison results.
+    #[derive(Clone, Debug, PartialEq, Eq)]
+    struct Val {
+        _a: u8,
+        b: i32,
+        _c: u32,
+    }
+
+    let input = sort_test_tools::patterns::random(50)
+        .into_iter()
+        .map(|val| Val {
+            _a: 0,
+            b: val,
+            _c: val.saturating_abs() as u32,
+        })
+        .collect::<Vec<Val>>();
+
+    let mut tiny_sorted = input.clone();
+    let mut std_sorted = input.clone();
+
+    tiny_sort::stable::sort_by_key(&mut tiny_sorted, |val| val.b);
+    std_sorted.sort_by_key(|val| val.b);
+
+    assert_eq!(tiny_sorted, std_sorted);
+}
