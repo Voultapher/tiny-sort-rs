@@ -3,7 +3,7 @@ name = "tiny_sort"
 version = "1.0.2"
 edition = "2018"
 authors = ["Lukas Bergdoll <lukas.bergdoll@gmail.com>"]
-license = "Apache-2.0"
+license = "MIT OR Apache-2.0"
 
 description = "Binary-size optimized stable and unstable sorts"
 readme = "README.md"
