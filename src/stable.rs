@@ -93,14 +93,15 @@ unsafe fn mergesort_core<T, F: FnMut(&T, &T) -> bool>(
     let len = v.len();
 
     if len > 2 {
-        let mid = len / 2;
-        // Sort the left half recursively.
-        mergesort_core(&mut v[..mid], scratch_ptr, is_less);
-        // Sort the right half recursively.
-        mergesort_core(&mut v[mid..], scratch_ptr, is_less);
-        // Combine the two halves.
-        // SAFETY: `scratch_ptr` can hold `v.len()` values and mid is in-bounds.
+        // SAFETY: `mid` is guaranteed in-bounds. And caller has to ensure that `scratch_ptr` can
+        // hold `v.len()` values.
         unsafe {
+            let mid = len / 2;
+            // Sort the left half recursively.
+            mergesort_core(v.get_unchecked_mut(..mid), scratch_ptr, is_less);
+            // Sort the right half recursively.
+            mergesort_core(v.get_unchecked_mut(mid..), scratch_ptr, is_less);
+            // Combine the two halves.
             merge(v, scratch_ptr, is_less, mid);
         }
     } else if len == 2 {
