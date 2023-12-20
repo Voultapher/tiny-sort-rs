@@ -1,5 +1,5 @@
 use core::cmp::Ordering;
-use core::mem::{self, MaybeUninit};
+use core::mem::{self, ManuallyDrop};
 use core::ptr;
 
 extern crate alloc;
@@ -170,30 +170,28 @@ where
     }
 }
 
-/// Swap two values in array pointed to by a_ptr and b_ptr if b is less than a.
+/// Swap two values pointed to by `x` and `y` if `should_swap` is true.
 #[inline(always)]
-pub unsafe fn branchless_swap<T>(a_ptr: *mut T, b_ptr: *mut T, should_swap: bool) {
-    // SAFETY: the caller must guarantee that `a_ptr` and `b_ptr` are valid for writes
-    // and properly aligned, and part of the same allocation, and do not alias.
-
+unsafe fn branchless_swap<T>(x: *mut T, y: *mut T, should_swap: bool) {
     // This is a branchless version of swap if.
     // The equivalent code with a branch would be:
     //
     // if should_swap {
-    //     ptr::swap_nonoverlapping(a_ptr, b_ptr, 1);
+    //     ptr::swap(x, y);
     // }
 
-    // Give ourselves some scratch space to work with.
-    // We do not have to worry about drops: `MaybeUninit` does nothing when dropped.
-    let mut tmp = MaybeUninit::<T>::uninit();
+    // SAFETY: the caller must guarantee that `x` and `y` are valid for writes
+    // and properly aligned.
+    unsafe {
+        // The goal is to generate cmov instructions here.
+        let x_swap = if should_swap { y } else { x };
+        let y_swap = if should_swap { x } else { y };
 
-    // The goal is to generate cmov instructions here.
-    let a_swap_ptr = if should_swap { b_ptr } else { a_ptr };
-    let b_swap_ptr = if should_swap { a_ptr } else { b_ptr };
+        let y_swap_copy = ManuallyDrop::new(ptr::read(y_swap));
 
-    ptr::copy_nonoverlapping(b_swap_ptr, tmp.as_mut_ptr(), 1);
-    ptr::copy(a_swap_ptr, a_ptr, 1);
-    ptr::copy_nonoverlapping(tmp.as_ptr(), b_ptr, 1);
+        ptr::copy(x_swap, x, 1);
+        ptr::copy_nonoverlapping(&*y_swap_copy, y, 1);
+    }
 }
 
 // SAFETY: The caller has to ensure that Option is Some, UB otherwise.
