@@ -18,7 +18,7 @@ include = ["src/*.rs", "Cargo.toml", "README.md", "LICENSE"]
 [dependencies]
 
 [dev-dependencies]
-sort_test_tools = { git = "https://github.com/Voultapher/sort-research-rs", rev = "5e07fb6ebb61920ff9f5e896badd88502fe40e35" }
+sort_test_tools = { git = "https://github.com/Voultapher/sort-research-rs", rev = "a626f6e55739a77de82e79bf6ca204e861232d17" }
 
 [features]
 default = ["stable", "unstable"]
