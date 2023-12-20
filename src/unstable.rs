@@ -132,9 +132,9 @@ where
                 break;
             }
 
-            // Swap `node` with the greater child, move one step down, and continue sifting.
-            // Same as v.swap_unchecked(node, child); which is unstable.
-            ptr::swap(arr_ptr.add(node), arr_ptr.add(child))
+            // Swap `node` with the greater child, move one step down, and continue sifting. This
+            // could be ptr::swap_nonoverlapping but that adds a significant amount of binary-size.
+            ptr::swap(arr_ptr.add(node), arr_ptr.add(child));
         }
 
         node = child;
