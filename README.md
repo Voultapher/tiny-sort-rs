@@ -33,7 +33,7 @@ The unstable sort is a branchless heapsort. This means:
 
 ```text
 Linux 6.3
-rustc 1.72.0-nightly (498553fc0 2023-05-29)
+rustc 1.76.0-nightly (f704f3b93 2023-12-19)
 clang version 15.0.7
 gcc (GCC) 13.1.1 20230429
 AMD Ryzen 9 5900X 12-Core Processor (Zen3 micro-architecture)
@@ -85,15 +85,15 @@ fn main() {
 }
 ```
 
-The baseline with the sort uncommented is: `292864 bytes`. The values below are the stripped binary size subtracted from the baseline.
+The baseline with the sort uncommented is: `292_864 bytes`. The values below are the stripped binary size subtracted from the baseline.
 
 ```text
-- rust_tinymergesort_stable    | 632 bytes
+- rust_tinymergesort_stable    | 528 bytes
 - rust_std_stable              | 2928 bytes
 - cpp_std_gnu_stable           | 5528 bytes
 - cpp_std_libxx_stable         | 4368 bytes
 
-- rust_tinyheapsort_unstable   | 304 bytes
+- rust_tinyheapsort_unstable   | 320 bytes
 - rust_std_unstable            | 3848 bytes
 - cpp_std_gnu_unstable         | 2128 bytes
 - cpp_std_libcxx_unstable      | 1272 bytes
